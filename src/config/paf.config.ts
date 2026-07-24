@@ -19,7 +19,7 @@ export const createPAFConfig = (overrides: Partial<PlaywrightTestConfig> = {}): 
     fullyParallel: true,
     forbidOnly: !!process.env.CI,
     retries: process.env.CI ? 2 : env.retries,
-    workers: process.env.CI ? 2 : undefined,
+    workers: process.env.WORKERS ? (isNaN(Number(process.env.WORKERS)) ? process.env.WORKERS : Number(process.env.WORKERS)) : (process.env.CI ? 4 : undefined),
     ...(fs.existsSync(localSetup) ? { globalSetup: localSetup } : {}),
     ...(fs.existsSync(localTeardown) ? { globalTeardown: localTeardown } : {}),
     reporter: [
