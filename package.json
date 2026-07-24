@@ -10,6 +10,9 @@
   },
   "files": [
     "dist",
+    "src",
+    "tsup.config.ts",
+    "tsconfig.json",
     "bin",
     "playwright.config.ts",
     "README.md"
