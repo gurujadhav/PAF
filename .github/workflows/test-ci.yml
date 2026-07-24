@@ -1,0 +1,105 @@
+name: PAF Automation Test CI & Reporting
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+  workflow_dispatch:
+    inputs:
+      run_lambdatest:
+        description: 'Run tests on LambdaTest Cloud Grid'
+        required: false
+        type: boolean
+        default: false
+
+jobs:
+  test-server:
+    name: Run Playwright Tests (In-Server & Local)
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Playwright Browsers with dependencies
+        run: npx playwright install --with-deps
+
+      - name: Build PAF Package
+        run: npm run build
+
+      - name: Execute PAF Test Suite
+        env:
+          HEADLESS: "true"
+          RECORD_VIDEO: "on"
+          RECORD_TRACE: "on"
+          SEND_MAIL_ON_FINISH: "${{ secrets.SMTP_PASS != '' }}"
+          SMTP_HOST: ${{ secrets.SMTP_HOST }}
+          SMTP_PORT: ${{ secrets.SMTP_PORT }}
+          SMTP_USER: ${{ secrets.SMTP_USER }}
+          SMTP_PASS: ${{ secrets.SMTP_PASS }}
+          MAIL_TO: ${{ secrets.MAIL_TO }}
+        run: npm test
+
+      - name: Upload Test Report & Video/Trace Artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: paf-test-execution-artifacts
+          path: |
+            test-results/
+            playwright-report/
+          retention-days: 14
+
+  test-lambdatest:
+    name: Run Playwright Tests on LambdaTest Grid
+    if: github.event.inputs.run_lambdatest == 'true' || secrets.LT_ACCESS_KEY != ''
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build PAF Package
+        run: npm run build
+
+      - name: Execute Tests on LambdaTest Grid
+        env:
+          LAMBDATEST: "true"
+          LT_USERNAME: ${{ secrets.LT_USERNAME }}
+          LT_ACCESS_KEY: ${{ secrets.LT_ACCESS_KEY }}
+          SEND_MAIL_ON_FINISH: "true"
+          SMTP_HOST: ${{ secrets.SMTP_HOST }}
+          SMTP_PORT: ${{ secrets.SMTP_PORT }}
+          SMTP_USER: ${{ secrets.SMTP_USER }}
+          SMTP_PASS: ${{ secrets.SMTP_PASS }}
+          MAIL_TO: ${{ secrets.MAIL_TO }}
+        run: npm run test:lambdatest
+
+      - name: Upload LambdaTest Execution Artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: lambdatest-execution-artifacts
+          path: |
+            test-results/
+            playwright-report/
+          retention-days: 14
