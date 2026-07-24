@@ -1,5 +1,5 @@
 {
-  "name": "paf-automation-framework",
+  "name": "@gurujadhav/paf",
   "version": "1.0.0",
   "description": "Modular Playwright Automation Framework (PAF) featuring email reporting, video/trace recording, LambdaTest integration, accessibility testing, and GitHub Actions support.",
   "main": "dist/index.js",
@@ -16,7 +16,8 @@
   ],
   "scripts": {
     "build": "tsup",
-    "test": "playwright test",
+    "paf": "node bin/paf.js",
+    "test": "node bin/paf.js",
     "test:chromium": "playwright test --project=Chromium",
     "test:firefox": "playwright test --project=Firefox",
     "test:webkit": "playwright test --project=WebKit",

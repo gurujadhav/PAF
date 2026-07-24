@@ -178,42 +178,25 @@ EmailReporterRegistry.registerCustomReporter(new CustomSlackReporter());
 
 ---
 
-## ⚡ Multi-Browser & Mobile Execution Commands
+## 🎛️ Advanced CLI Runner Flags (`npx paf` / `node bin/paf.js`)
 
+PAF features an intelligent CLI tool (`bin/paf.js`) supporting tag filtering, browser selection, report backups, and conditional email reporting:
+
+| CLI Option | Example Command | Description |
+| --- | --- | --- |
+| **Tag Inclusion (`@tag`)** | `node bin/paf.js @smoke` | Runs only tests matching `@smoke` tag |
+| **Tag Exclusion (`--skip @tag`)** | `node bin/paf.js --skip @flaky` | Runs tests excluding `@flaky` tag |
+| **Browser Selection (`--browser`)** | `node bin/paf.js --browser chrome` | Targets `Chromium`, `Firefox`, or `WebKit` |
+| **Headed Mode (`--headed`)** | `node bin/paf.js --headed` | Runs browser visibly |
+| **Headless Mode (`--headless`)** | `node bin/paf.js --headless` | Runs browser headless |
+| **Report Backup (`--reportsBackup`)** | `node bin/paf.js --reportsBackup` | Archives prior reports & test results to timestamped backup folder before running |
+| **Email Reporting (`--email`)** | `node bin/paf.js --email` | Sends email report on finish (skips email if flag is absent) |
+
+### Combined Example Commands
 ```bash
-# Run all tests
-npm test
+# Run @smoke tagged tests on Chrome in headed mode and email report upon completion
+node bin/paf.js --browser chrome @smoke --headed --email
 
-# Run tests on Chromium
-npm run test:chromium
-
-# Run tests on Firefox
-npm run test:firefox
-
-# Run tests on WebKit
-npm run test:webkit
-
-# Run mobile emulation tests (Pixel 5 & iPhone 13)
-npm run test:mobile
-
-# Run Accessibility (a11y) tests
-npm run test:a11y
-
-# Run API tests
-npm run test:api
-
-# Run tests in Playwright Interactive UI Mode
-npm run test:ui
-
-# Run tests in Headed browser mode
-npm run test:headed
-
-# Run tests in Debug mode
-npm run test:debug
-
-# Run tests on LambdaTest Cloud Grid
-npm run test:lambdatest
-
-# View HTML Test Execution Report
-npm run test:report
+# Backup previous execution reports and run all tests excluding @wip tag on Firefox
+node bin/paf.js --browser firefox --skip @wip --reportsBackup
 ```

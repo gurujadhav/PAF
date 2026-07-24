@@ -3,7 +3,7 @@ import { TodoPage } from '../pages/todo.page.js';
 
 test.describe('PAF TodoMVC Automation Suite', () => {
 
-  test('should create new todo item and capture video & traces', async ({ page, pafLogger }) => {
+  test('should create new todo item and capture video & traces @smoke', async ({ page, pafLogger }) => {
     const todoPage = new TodoPage(page);
 
     pafLogger.info('Navigating to TodoMVC demo app...');
