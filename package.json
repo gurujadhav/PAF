@@ -56,6 +56,9 @@
     "dotenv": "^16.6.1",
     "nodemailer": "^6.10.1"
   },
+  "peerDependencies": {
+    "@playwright/test": ">=1.40.0"
+  },
   "devDependencies": {
     "@playwright/test": "^1.61.1",
     "@types/node": "^22.20.1",
