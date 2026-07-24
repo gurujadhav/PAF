@@ -19,7 +19,6 @@
   ],
   "scripts": {
     "build": "tsup",
-    "prepare": "pnpm run build",
     "paf": "node bin/paf.js",
     "test": "node bin/paf.js",
     "test:chromium": "playwright test --project=Chromium",
