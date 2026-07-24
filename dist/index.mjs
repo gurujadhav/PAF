@@ -826,7 +826,7 @@ var createPAFConfig = (overrides = {}) => {
     fullyParallel: true,
     forbidOnly: !!process.env.CI,
     retries: process.env.CI ? 2 : env.retries,
-    workers: process.env.WORKERS ? isNaN(Number(process.env.WORKERS)) ? process.env.WORKERS : Number(process.env.WORKERS) : process.env.CI ? 4 : void 0,
+    workers: process.env.WORKERS ? isNaN(Number(process.env.WORKERS)) ? process.env.WORKERS : Number(process.env.WORKERS) : process.env.CI ? 1 : void 0,
     ...fs3.existsSync(localSetup) ? { globalSetup: localSetup } : {},
     ...fs3.existsSync(localTeardown) ? { globalTeardown: localTeardown } : {},
     reporter: [
