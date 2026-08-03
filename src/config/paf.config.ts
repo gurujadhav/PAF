@@ -1,8 +1,14 @@
 import { PlaywrightTestConfig, devices } from '@playwright/test';
+import path from 'path';
+import fs from 'fs';
 import { getEnvConfig } from './env.config.js';
 
 export const createPAFConfig = (overrides: Partial<PlaywrightTestConfig> = {}): PlaywrightTestConfig => {
   const env = getEnvConfig();
+
+  const cwd = process.cwd();
+  const localSetup = path.resolve(cwd, 'src/core/global.setup.ts');
+  const localTeardown = path.resolve(cwd, 'src/core/global.teardown.ts');
 
   const config: PlaywrightTestConfig = {
     testDir: './tests',
@@ -13,14 +19,13 @@ export const createPAFConfig = (overrides: Partial<PlaywrightTestConfig> = {}): 
     fullyParallel: true,
     forbidOnly: !!process.env.CI,
     retries: process.env.CI ? 2 : env.retries,
-    workers: process.env.CI ? 2 : undefined,
-    globalSetup: './src/core/global.setup.ts',
-    globalTeardown: './src/core/global.teardown.ts',
+    workers: process.env.WORKERS ? (isNaN(Number(process.env.WORKERS)) ? process.env.WORKERS : Number(process.env.WORKERS)) : (process.env.CI ? 1 : undefined),
+    ...(fs.existsSync(localSetup) ? { globalSetup: localSetup } : {}),
+    ...(fs.existsSync(localTeardown) ? { globalTeardown: localTeardown } : {}),
     reporter: [
       ['list'],
       ['html', { open: 'never' }],
       ['json', { outputFile: 'test-results/results.json' }],
-      ['./src/reporters/paf.reporter.ts'],
     ],
     use: {
       baseURL: env.baseUrl,

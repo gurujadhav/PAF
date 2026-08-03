@@ -13,6 +13,14 @@ export abstract class BasePage {
   }
 
   /**
+   * Wait for element to be visible
+   */
+  public async waitForVisible(selectorOrLocator: string | Locator): Promise<void> {
+    const locator = typeof selectorOrLocator === 'string' ? this.page.locator(selectorOrLocator) : selectorOrLocator;
+    await locator.waitFor({ state: 'visible' });
+  }
+
+  /**
    * Click an element identified by selector or locator
    */
   public async click(selectorOrLocator: string | Locator): Promise<void> {

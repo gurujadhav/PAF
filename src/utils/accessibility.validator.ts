@@ -28,7 +28,7 @@ export class AccessibilityValidator {
   /**
    * Performs an accessibility audit using Axe-Core
    */
-  public async audit(options: AccessibilityAuditOptions = {}) {
+  public async audit(options: AccessibilityAuditOptions = {}): Promise<any> {
     const {
       tags = ['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa', 'best-practice'],
       includeSelectors = [],
@@ -68,7 +68,7 @@ export class AccessibilityValidator {
     const violations = results.violations;
 
     if (violations.length > 0) {
-      const summaryList: AccessibilityViolationSummary[] = violations.map((v) => ({
+      const summaryList: AccessibilityViolationSummary[] = violations.map((v: any) => ({
         id: v.id,
         impact: v.impact,
         description: v.description,
